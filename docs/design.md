@@ -49,7 +49,7 @@ GitHub Pages 由 **main 分支根目錄（/）** 發布（理由見第 8 節）�
 └── CLAUDE.md
 ```
 
-- `package.json` 內容要求：`"private": true`、`"type": "module"`、`"scripts": { "test": "node --test tests/" }`、`"devDependencies": { "playwright": "1.63.0" }`。網站本身不依賴它。
+- `package.json` 內容要求：`"private": true`、`"type": "module"`、`"scripts": { "test": "node --test \"tests/**/*.test.js\"" }`、`"devDependencies": { "playwright": "1.63.0" }`。網站本身不依賴它。
 - 不得新增建置工具（webpack、vite 等）。
 
 ### 2.1 測試位置與方式（建議給 QA）
@@ -69,7 +69,7 @@ tests/
     └── export.test.js    # 下載 PNG 驗證
 ```
 
-- 執行：`npm test`（或 `node --test tests/`）。e2e 透過 `helpers/server.js` 起本機伺服器（ES Modules 不能用 `file://` 開啟）。
+- 執行：`npm test`（或 `node --test "tests/**/*.test.js"`）。glob 須加引號，由 Node 自行展開（Node 22 起 `--test` 支援 glob），以免 shell 展開不一致；只比對 `tests/unit/`、`tests/e2e/` 下的 `*.test.js`，`tests/helpers/` 不會被當成測試執行。不得使用 `node --test tests/`：Node 22 會把目錄參數當模組路徑載入而失敗（BUG-1）。`tests/index.js`（BUG-1 的暫時緩解入口檔）改用新指令後不再需要，應刪除；若保留且同時被執行會使每個測試跑兩次。e2e 透過 `helpers/server.js` 起本機伺服器（ES Modules 不能用 `file://` 開啟）。
 - 本環境只有 Chromium（無 WebKit）；iPad 相關條件以 Chromium 的 iPad 裝置模擬（觸控、視窗尺寸、旋轉＝切換 viewport）驗證，真機 Safari 部分由 QA 在 test-report 列為「需人工驗證」並附檢查步驟。
 - PNG 驗證建議：讀下載檔前 8 bytes 為 PNG 簽章；IHDR 寬 370、高 320、color type 6（RGBA）；再於頁面中載入該 PNG 到 canvas 用 `getImageData` 檢查角落像素 alpha（透明背景 = 0，其他場景 = 255）。
 - 裁切檢查建議：用測試掛鉤 `window.__stickerApp.buildSceneSvg(state)` 取得 SVG，插入 DOM 後對每個 `g[data-layer]` 取 `getBBox()`，檢查是否落在第 4.5 節規定的範圍內；文字用 `window.__stickerApp.getTextLayout()` 檢查。
