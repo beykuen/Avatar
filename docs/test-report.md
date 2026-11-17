@@ -6,11 +6,11 @@
 - 未修改任何程式碼；僅新增 `tests/` 與本報告。
 
 ## 2. 執行指令與結果
-- 指令：`npm test`（= `node --test tests/`），亦可用 `node --test "tests/**/*.test.js"`
+- 指令：`npm test`（= `node --test "tests/**/*.test.js"`）
 - 結果：**60 項測試，60 通過，0 失敗**（約 14–30 秒）
   - unit：19（catalog 11、state 8）
   - e2e：desktop 18、export 7、ipad 13、mobile 3
-- 注意：Node 22 下 `node --test tests/` 會把目錄當模組載入而失敗（見 BUG-1），QA 新增 `tests/index.js` 匯入全部測試作為緩解，使 `npm test` 可執行。
+- 驗證：已刪除暫時緩解用的 `tests/index.js`，全部測試各只執行一次（TAP 計數 1..60，tests 60 / pass 60 / fail 0 / skipped 0）。BUG-1 已修正並驗證（見第 5 節）。
 
 ## 3. 逐條驗收條件
 
@@ -42,14 +42,16 @@
 
 ## 5. 缺陷清單
 
-### BUG-1（低）`npm test` 在 Node 22 無法執行
+### BUG-1（低）`npm test` 在 Node 22 無法執行 — 狀態：已修正並驗證
 - 對應：非 AC（專案測試流程，設計 2.1/package.json）
-- 重現：Node 22.23.4 下執行 `node --test tests/`（package.json 的 `test` 指令）。
+- 重現：Node 22.23.4 下執行 `node --test tests/`（原 package.json 的 `test` 指令）。
 - 預期：執行 tests 下全部測試。
 - 實際：`Error: Cannot find module '/home/user/testrpo/tests'`，0 項測試執行。
-- 緩解：QA 新增 `tests/index.js` 匯入全部測試檔，現在 `npm test` 可執行（60/60）。建議 AP/SA 改 package.json 為 `node --test "tests/**/*.test.js"`（QA 不得修改 package.json）。
+- 原緩解：QA 曾新增 `tests/index.js` 匯入全部測試檔。
+- 修正方式：docs/design.md 改為 `node --test "tests/**/*.test.js"` 並規定刪除 `tests/index.js`（避免重複執行）；AP 已將 package.json 的 `test` 改為該指令；QA 已刪除 `tests/index.js`。
+- 驗證結果：`npm test` 執行 60 項測試、60 通過、0 失敗，每項只執行一次，無重複。
 
-除上述外，**未發現功能缺陷**（無 AC 失敗）。
+BUG-1 已修正，**未發現其他功能缺陷**（無 AC 失敗）。
 
 ## 6. 測試檔案
-`tests/helpers/{pw,server,app}.js`、`tests/unit/{catalog,state}.test.js`、`tests/e2e/{desktop,export,ipad,mobile}.test.js`、`tests/index.js`
+`tests/helpers/{pw,server,app}.js`、`tests/unit/{catalog,state}.test.js`、`tests/e2e/{desktop,export,ipad,mobile}.test.js`（已刪除 `tests/index.js`）
