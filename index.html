@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q 版紙娃娃貼圖產生器</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header"><h1>Q 版紙娃娃貼圖產生器</h1></header>
+  <main class="layout">
+    <section class="preview-area">
+      <div class="preview-frame">
+        <canvas id="preview-canvas" width="740" height="640" aria-label="貼圖預覽"></canvas>
+      </div>
+      <div class="actions">
+        <button type="button" id="btn-random" class="btn">隨機搭配</button>
+        <button type="button" id="btn-reset" class="btn">全部重設</button>
+        <button type="button" id="btn-export" class="btn btn-primary">輸出貼圖</button>
+      </div>
+    </section>
+    <section class="control-area">
+      <nav class="tabs" role="tablist" aria-label="素材分類">
+        <button type="button" role="tab" class="tab" data-tab-target="doll" aria-selected="true">人偶</button>
+        <button type="button" role="tab" class="tab" data-tab-target="clothes" aria-selected="false">服裝</button>
+        <button type="button" role="tab" class="tab" data-tab-target="accessory" aria-selected="false">配件</button>
+        <button type="button" role="tab" class="tab" data-tab-target="vehicle" aria-selected="false">交通/設施</button>
+        <button type="button" role="tab" class="tab" data-tab-target="scene" aria-selected="false">場景</button>
+        <button type="button" role="tab" class="tab" data-tab-target="text" aria-selected="false">文字</button>
+      </nav>
+      <div class="tab-panel" role="tabpanel" data-tab="doll"></div>
+      <div class="tab-panel" role="tabpanel" data-tab="clothes" hidden></div>
+      <div class="tab-panel" role="tabpanel" data-tab="accessory" hidden></div>
+      <div class="tab-panel" role="tabpanel" data-tab="vehicle" hidden></div>
+      <div class="tab-panel" role="tabpanel" data-tab="scene" hidden></div>
+      <div class="tab-panel" role="tabpanel" data-tab="text" hidden></div>
+    </section>
+  </main>
+  <canvas id="export-canvas" hidden width="370" height="320"></canvas>
+  <dialog id="export-dialog">
+    <h2>貼圖已產生</h2>
+    <img id="export-image" width="370" height="320" alt="輸出的貼圖">
+    <p>已嘗試下載 PNG（370 × 320）。若沒有自動下載：iPad／iPhone 可長按上方圖片選「加入照片」存到相簿，或點「下載 PNG」存到「檔案」。</p>
+    <div class="dialog-actions">
+      <button type="button" id="btn-download-again" class="btn btn-primary">下載 PNG</button>
+      <button type="button" id="btn-close-dialog" class="btn">關閉</button>
+    </div>
+  </dialog>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
